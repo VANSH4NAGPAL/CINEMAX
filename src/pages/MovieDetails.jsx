@@ -31,6 +31,18 @@ const MovieDetails = () => {
   const [loadingTrailer, setLoadingTrailer] = useState(false);
   const [trailerError, setTrailerError] = useState(null);
   const [isMinimumTimeElapsed, setIsMinimumTimeElapsed] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false);
+
+useEffect(() => {
+  if (movie && isMinimumTimeElapsed) {
+    // Trigger the content fade-in after both conditions are met
+    const fadeInTimer = setTimeout(() => {
+      setIsContentVisible(true);
+    }, 100);
+    return () => clearTimeout(fadeInTimer);
+  }
+}, [movie, isMinimumTimeElapsed]);
+
   useEffect(() => {
   const timer = setTimeout(() => {
     setIsMinimumTimeElapsed(true);
@@ -239,7 +251,7 @@ const MovieDetails = () => {
   const backdropUrl = posterUrl; // OMDb doesn't have separate backdrop, use poster
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-slate-900 text-white">
+    <div className={`min-h-screen bg-gradient-to-br from-black via-gray-900 to-slate-900 text-white transition-opacity duration-500 ${isContentVisible ? 'opacity-100' : 'opacity-0'}`}>
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gray-500/3 rounded-full blur-3xl animate-pulse"></div>
@@ -273,7 +285,9 @@ const MovieDetails = () => {
       </div>
 
       {/* Main Container */}
-      <div className="relative max-w-7xl mx-auto px-6 py-8 lg:px-12 lg:py-12">
+      <div 
+  className={`relative max-w-7xl mx-auto px-6 py-8 lg:px-12 lg:py-12 transition-all duration-700 ease-out ${isContentVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+>
         {/* Enhanced Header Section */}
         <div className="mb-16">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 mb-8">
