@@ -1,0 +1,97 @@
+// components/PageWrapper.js
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+
+const PageWrapper = ({ children, minLoadTime = 1500 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    
+    // Ensure minimum loading time
+    const timer = setTimeout(() => {
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, minLoadTime - elapsedTime);
+      
+      setTimeout(() => {
+        setIsLoading(false);
+        // Add small delay for smooth transition
+        setTimeout(() => setShowContent(true), 150);
+      }, remainingTime);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center z-50">
+        {/* Same premium loader design */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute w-1 h-1 bg-white/10 rounded-full animate-pulse top-1/4 left-1/4"></div>
+          <div className="absolute w-0.5 h-0.5 bg-yellow-400/20 rounded-full animate-ping top-1/3 right-1/4"></div>
+          <div className="absolute w-1.5 h-1.5 bg-white/8 rounded-full animate-pulse bottom-1/3 left-1/3"></div>
+          <div className="absolute w-0.5 h-0.5 bg-white/15 rounded-full animate-ping top-2/3 right-1/3"></div>
+          <div className="absolute w-1 h-1 bg-yellow-400/15 rounded-full animate-pulse bottom-1/4 right-1/2"></div>
+        </div>
+        
+        <div className="relative flex flex-col items-center space-y-8">
+          <div className="text-center mb-6">
+            <div className="text-4xl font-light text-white mb-3 tracking-wide">
+              CINEMAX
+            </div>
+            <div className="h-px w-32 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-3"></div>
+            <div className="text-white/40 text-xs font-light tracking-widest uppercase">
+              Premium Cinema Experience
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="w-16 h-16 border border-white/20 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-t border-yellow-400 rounded-full animate-spin"></div>
+            <div className="absolute top-3 left-3 w-10 h-10 border border-white/10 rounded-full"></div>
+            <div 
+              className="absolute top-3 left-3 w-10 h-10 border-t border-white/60 rounded-full"
+              style={{ animation: 'spin 2s linear infinite reverse' }}
+            ></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          <div className="text-center">
+            <div className="text-white/80 text-sm font-light mb-4 tracking-wide">
+              Loading
+            </div>
+            <div className="flex justify-center space-x-2">
+              <div className="w-1 h-1 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-1 h-1 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+              <div className="w-1 h-1 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '600ms' }}></div>
+            </div>
+          </div>
+          
+          <div className="w-48 h-px bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-transparent via-yellow-400 to-transparent animate-pulse"></div>
+          </div>
+        </div>
+        
+        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+        <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      className={`transition-all duration-700 ease-out ${
+        showContent 
+          ? 'opacity-100 transform translate-y-0' 
+          : 'opacity-0 transform translate-y-4'
+      }`}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default PageWrapper;
