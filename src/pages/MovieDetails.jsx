@@ -248,17 +248,20 @@ const MovieDetails = () => {
       {/* Back Button */}
       <div className="relative z-10 pt-8 pl-6 lg:pl-12">
         <button
-          onClick={handleBackClick}
-          className="group flex items-center gap-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-xl px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl border border-slate-700/50 hover:border-slate-600/50 cursor-pointer fixed"
-        >
-          <ArrowLeft
-            size={20}
-            className="text-cyan-400 group-hover:text-cyan-300 group-hover:-translate-x-1 transition-all duration-300"
-          />
-          <span className="text-white font-semibold group-hover:text-cyan-100 transition-colors duration-300">
-            Back to Movies
-          </span>
-        </button>
+  onClick={handleBackClick}
+  className="group flex items-center gap-2 sm:gap-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl border border-slate-700/50 hover:border-slate-600/50 cursor-pointer fixed top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8 z-50"
+>
+  <ArrowLeft
+    size={16}
+    className="text-cyan-400 group-hover:text-cyan-300 group-hover:-translate-x-1 transition-all duration-300 sm:w-5 sm:h-5 lg:w-6 lg:h-6"
+  />
+  <span className="text-white font-medium sm:font-semibold group-hover:text-cyan-100 transition-colors duration-300 text-sm sm:text-base lg:text-lg hidden xs:inline">
+    Back to Movies
+  </span>
+  <span className="text-white font-medium group-hover:text-cyan-100 transition-colors duration-300 text-xs xs:hidden">
+    Back
+  </span>
+</button>
       </div>
 
       {/* Main Container */}
