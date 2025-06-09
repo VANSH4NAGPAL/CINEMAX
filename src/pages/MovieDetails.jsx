@@ -75,13 +75,8 @@ const MovieDetails = () => {
       )}&type=video&key=${YOUTUBE_API_KEY}`;
 
       const response = await fetch(youtubeUrl);
-      
-      // Check if response is ok before parsing JSON
-      if (!response.ok) {
-        throw new Error(`YouTube API request failed: ${response.status} ${response.statusText}`);
-      }
-
       const data = await response.json();
+
       console.log("YouTube API Response:", data);
 
       if (data.error) {
@@ -97,20 +92,13 @@ const MovieDetails = () => {
           item.snippet.title.toLowerCase().includes('official')
         ) || data.items[0];
         
-        // Check if videoId exists (sometimes it might be undefined)
-        if (trailerVideo.id && trailerVideo.id.videoId) {
-          const videoId = trailerVideo.id.videoId;
-          // Updated embed URL with better parameters for Vercel deployment
-          const trailerEmbedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}`;
-          
-          console.log("Found trailer:", trailerVideo.snippet.title);
-          console.log("Trailer URL:", trailerEmbedUrl);
-          
-          setTrailerUrl(trailerEmbedUrl);
-        } else {
-          console.error("No video ID found in trailer data");
-          setTrailerError("Invalid trailer data received");
-        }
+        const videoId = trailerVideo.id.videoId;
+        const trailerEmbedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=1`;
+        
+        console.log("Found trailer:", trailerVideo.snippet.title);
+        console.log("Trailer URL:", trailerEmbedUrl);
+        
+        setTrailerUrl(trailerEmbedUrl);
       } else {
         console.log("No trailer found for:", searchQuery);
         setTrailerError("No trailer found");
@@ -389,9 +377,8 @@ const MovieDetails = () => {
                   className="w-full h-full"
                   frameBorder="0"
                   allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   title="Movie Trailer"
-                  referrerPolicy="strict-origin-when-cross-origin"
                 />
               ) : backdropUrl ? (
                 // Show backdrop with play button overlay
@@ -431,9 +418,6 @@ const MovieDetails = () => {
                       <div className="bg-black/70 text-white p-4 rounded-lg shadow-2xl backdrop-blur-sm border border-gray-600/30 text-center">
                         <Youtube size={24} className="mx-auto mb-2 text-gray-400" />
                         <p className="text-sm">No trailer available</p>
-                        {trailerError && (
-                          <p className="text-xs text-red-400 mt-1">{trailerError}</p>
-                        )}
                       </div>
                     </div>
                   )}
@@ -479,6 +463,8 @@ const MovieDetails = () => {
 
         {/* Enhanced Action Buttons */}
         <div className="flex flex-wrap gap-6 mb-16">
+          
+
           {movie.imdbID && (
             <a
               href={`https://www.imdb.com/title/${movie.imdbID}`}
@@ -600,66 +586,76 @@ const MovieDetails = () => {
               </div>
             </div>
 
-            <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 hover:border-slate-600/50">
-              <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
-                <DollarSign size={18} className="text-emerald-400" />
-                Box Office
-              </h3>
-              <div className="space-y-4">
-                {movie.BoxOffice && movie.BoxOffice !== "N/A" && (
-                  <div>
-                    <p className="text-gray-400 text-sm font-medium">Box Office</p>
-                    <p className="text-white font-semibold text-xl">{formatBudget(movie.BoxOffice)}</p>
-                  </div>
-                )}
-                {!movie.BoxOffice || movie.BoxOffice === "N/A" ? (
-                  <p className="text-gray-400">Box office data not available</p>
-                ) : null}
+            {movie.BoxOffice && movie.BoxOffice !== "N/A" && (
+              <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-green-500/10 transition-all duration-300 hover:border-slate-600/50">
+                <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
+                  <DollarSign size={18} className="text-green-400" />
+                  Box Office
+                </h3>
+                <p className="text-white text-2xl font-bold">
+                  {formatBudget(movie.BoxOffice)}
+                </p>
+                <p className="text-gray-400 text-sm mt-2">Total Earnings</p>
               </div>
-            </div>
+            )}
 
-            <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-violet-500/10 transition-all duration-300 hover:border-slate-600/50">
-              <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
-                <Building2 size={18} className="text-violet-400" />
-                Production
-              </h3>
-              <div className="space-y-4">
-                {movie.Production && movie.Production !== "N/A" && (
-                  <div>
-                    <p className="text-gray-400 text-sm font-medium">Production Company</p>
-                    <p className="text-white font-semibold">{movie.Production}</p>
-                  </div>
-                )}
-                {movie.Type && (
-                  <div>
-                    <p className="text-gray-400 text-sm font-medium">Type</p>
-                    <p className="text-white font-semibold capitalize">{movie.Type}</p>
-                  </div>
-                )}
+            {movie.Production && movie.Production !== "N/A" && (
+              <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 hover:border-slate-600/50">
+                <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
+                  <Building2 size={18} className="text-indigo-400" />
+                  Production
+                </h3>
+                <p className="text-white text-lg font-semibold">
+                  {movie.Production}
+                </p>
               </div>
-            </div>
+            )}
 
             {movie.Awards && movie.Awards !== "N/A" && (
               <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-yellow-500/10 transition-all duration-300 hover:border-slate-600/50">
                 <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
                   <Award size={18} className="text-yellow-400" />
-                  Awards & Recognition
+                  Awards
                 </h3>
-                <p className="text-white font-semibold leading-relaxed">{movie.Awards}</p>
+                <p className="text-white font-semibold leading-relaxed">
+                  {movie.Awards}
+                </p>
               </div>
             )}
 
-            {movie.Ratings && movie.Ratings.length > 0 && (
-              <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 hover:border-slate-600/50">
+            {movie.Website && movie.Website !== "N/A" && (
+              <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-teal-500/10 transition-all duration-300 hover:border-slate-600/50">
                 <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
-                  <Star size={18} className="text-orange-400" />
+                  <Globe size={18} className="text-teal-400" />
+                  Official Website
+                </h3>
+                <a
+                  href={movie.Website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-400 hover:text-teal-300 font-semibold text-lg transition-colors duration-300 underline-offset-4 hover:underline"
+                >
+                  Visit Website
+                </a>
+              </div>
+            )}
+
+            {/* Additional Ratings */}
+            {movie.Ratings && movie.Ratings.length > 0 && (
+              <div className="bg-slate-800/30 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/50 shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 hover:border-slate-600/50">
+                <h3 className="text-gray-400 text-sm mb-6 font-bold uppercase tracking-wider flex items-center gap-3">
+                  <Star size={18} className="text-purple-400" />
                   Additional Ratings
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {movie.Ratings.map((rating, index) => (
                     <div key={index} className="flex justify-between items-center">
-                      <span className="text-gray-300 font-medium">{rating.Source}</span>
-                      <span className="text-white font-semibold">{rating.Value}</span>
+                      <span className="text-gray-300 font-medium">
+                        {rating.Source}
+                      </span>
+                      <span className="text-white font-bold">
+                        {rating.Value}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -669,42 +665,7 @@ const MovieDetails = () => {
         </div>
       </div>
 
-      {/* Enhanced Trailer Modal */}
-      {showTrailer && trailerUrl && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-6xl aspect-video">
-            <button
-              onClick={toggleTrailer}
-              className="absolute -top-12 right-0 text-white hover:text-red-400 transition-colors duration-200 z-10 bg-black/50 hover:bg-black/70 p-2 rounded-full"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            <iframe
-              src={trailerUrl}
-              className="w-full h-full rounded-xl shadow-2xl"
-              frameBorder="0"
-              allowFullScreen
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              title="Movie Trailer"
-              referrerPolicy="strict-origin-when-cross-origin"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* CSS Animations */}
+      {/* CSS for fadeInUp animation */}
       <style jsx>{`
         @keyframes fadeInUp {
           from {
