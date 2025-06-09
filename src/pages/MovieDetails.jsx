@@ -249,7 +249,7 @@ const MovieDetails = () => {
       <div className="relative z-10 pt-8 pl-6 lg:pl-12">
         <button
           onClick={handleBackClick}
-          className="group flex items-center gap-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-xl px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl border border-slate-700/50 hover:border-slate-600/50 cursor-pointer"
+          className="group flex items-center gap-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-xl px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl border border-slate-700/50 hover:border-slate-600/50 cursor-pointer fixed"
         >
           <ArrowLeft
             size={20}
