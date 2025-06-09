@@ -30,6 +30,14 @@ const MovieDetails = () => {
   const [showTrailer, setShowTrailer] = useState(false);
   const [loadingTrailer, setLoadingTrailer] = useState(false);
   const [trailerError, setTrailerError] = useState(null);
+  const [isMinimumTimeElapsed, setIsMinimumTimeElapsed] = useState(false);
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setIsMinimumTimeElapsed(true);
+  }, 1000);
+
+  return () => clearTimeout(timer);
+}, []);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -119,7 +127,7 @@ const MovieDetails = () => {
     setShowTrailer(!showTrailer);
   };
 
-  if (!movie)
+  if (!movie || !isMinimumTimeElapsed)
     return (
       <div className="min-h-screen bg-black flex items-center justify-center relative overflow-hidden">
         {/* Premium Dark Glow */}

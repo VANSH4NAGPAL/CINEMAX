@@ -10,7 +10,7 @@ const LoadingSpinner = ({ isVisible, onLoadingComplete }) => {
     // Ensure loader stays for at least 1.5 seconds
     const timer = setTimeout(() => {
       onLoadingComplete();
-    }, 1500);
+    }, 1300);
 
     return () => clearTimeout(timer);
   }, [onLoadingComplete]);
